@@ -1,9 +1,36 @@
-const btnElement = document.querySelector('button');
-const delay = document.querySelector('[name="delay"]');
-const step = document.querySelector('[name="step"]');
-const amount = document.querySelector('[name="amount"]');
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-btnElement.addEventListener('click', onBtn);
+const btnEl = document.querySelector('button');
+const DelayEl = document.querySelector("input[name='delay']");
+const StepEl = document.querySelector("input[name='step']");
+const AmountEl = document.querySelector(" [name='amount']");
+
+btnEl.addEventListener('click', onBtn);
+
+function onBtn(evt) {
+  evt.preventDefault();
+  const delayFirst = +DelayEl.value;
+  const step = +StepEl.value;
+  const amount = +AmountEl.value;
+  DelayEl.value = '';
+  StepEl.value = '';
+  AmountEl.value = '';
+  for (let i = 0; i < amount; i += 1) {
+    let position = i + 1;
+    let delay = delayFirst + i * step;
+    createPromise(position, delay)
+      .then(({ position, delay }) => {
+        Notify.success(
+          `${Notify} Fulfilled promise ${position} in ${delay}ms`
+        );
+        console.log(`${Notify} Fulfilled promise ${position} in ${delay}ms`);
+      })
+      .catch(({ position, delay }) => {
+        Notify.failure(`${Notify} Rejected promise ${position} in ${delay}ms`);
+        console.log(`${Notify} Rejected promise ${position} in ${delay}ms`);
+      });
+  }
+}
 
 function createPromise(position, delay) {
   return new Promise((resolve, reject) => {
@@ -16,20 +43,4 @@ function createPromise(position, delay) {
       }
     }, delay);
   });
-}
-
-function onBtn(evt) {
-  evt.preventDefault();
-  for (let position = 1; position <= amount.value; position += 1) {
-    createPromise(position, delay.value)
-      .then(({ position, delay }) => {
-        console.log(
-          `:белая_галочка: Fulfilled promise ${position} in ${delay}ms`
-        );
-      })
-      .catch(({ position, delay }) => {
-        console.log(`:х: Rejected promise ${position} in ${delay}ms`);
-      });
-    delay.value += step.value;
-  }
 }

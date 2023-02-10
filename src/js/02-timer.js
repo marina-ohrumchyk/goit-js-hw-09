@@ -17,11 +17,11 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     if (selectedDates[0] < options.defaultDate) {
-      Notify.failure('Please choose a date in the future');
+      Notify.failure("Please choose a date in the future");
     } else {
-      options.defaultDate = selectedDates[0];
-      ref.btn.disabled = !isBtnActive;
-    }
+        options.defaultDate = selectedDates[0];
+        startBtn.removeAttribute("disabled");
+  }
   },
 };
 
@@ -30,14 +30,22 @@ flatpickr(inputEl, options);
 startBtn.addEventListener('click', onClick);
 
 function onClick() {
+  startBtn.disabled = true;
+  timerId = setInterval(refreshTimerValues, 1000);  
+};
+
+function refreshTimerValues() {
   const selectedDate = inputEl.value;
   const ms = new Date(selectedDate) - Date.now();
   const convertedDate = convertMs(ms);
+  if (ms < 1000) {
+      clearInterval(timerId);
+  };
   spanDays.textContent = addLeadingZero(convertedDate.days);
   spanHours.textContent = addLeadingZero(convertedDate.hours);
   spanMinutes.textContent = addLeadingZero(convertedDate.minutes);
   spanSeconds.textContent = addLeadingZero(convertedDate.seconds);
-  timerId = setInterval(onClick, 1000);
+  
 }
 
 function addLeadingZero(value) {
