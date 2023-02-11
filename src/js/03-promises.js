@@ -1,4 +1,4 @@
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import Notiflix from 'notiflix';
 
 const btnEl = document.querySelector('button');
 const DelayEl = document.querySelector("input[name='delay']");
@@ -19,18 +19,16 @@ function onBtn(evt) {
     let position = i + 1;
     let delay = delayFirst + i * step;
     createPromise(position, delay)
-      .then(({ position, delay }) => {
-        Notify.success(
-          `${Notify} Fulfilled promise ${position} in ${delay}ms`
-        );
-        console.log(`${Notify} Fulfilled promise ${position} in ${delay}ms`);
-      })
-      .catch(({ position, delay }) => {
-        Notify.failure(`${Notify} Rejected promise ${position} in ${delay}ms`);
-        console.log(`${Notify} Rejected promise ${position} in ${delay}ms`);
-      });
-  }
-}
+       .then(({ position, delay }) => {
+        Notiflix.Notify.success(`Fulfilled promise ${position} in ${delay}ms`);
+         console.log(`Fulfilled promise ${position} in ${delay}ms`);
+       })
+       .catch(({ position, delay }) => {
+        Notiflix.Notify.failure(`Rejected promise ${position} in ${delay}ms`);
+         console.log(`Rejected promise ${position} in ${delay}ms`);
+       });
+   }
+ }
 
 function createPromise(position, delay) {
   return new Promise((resolve, reject) => {
